@@ -1,0 +1,48 @@
+public class CTime implements Time {
+	
+	private int Hours;
+	private int Mins;
+	private int Secs;
+	private int MSecs;
+
+	@Override
+	public int getHH() {
+		return Hours;
+	}
+
+	@Override
+	public int getMM() {
+		return Mins;
+	}
+
+	@Override
+	public int getSS() {
+		return Secs;
+	}
+
+	@Override
+	public int getMS() {
+		return MSecs;
+	}
+
+	@Override
+	public void setHH(int hh) {
+		this.Hours = hh;
+	}
+
+	@Override
+	public void setMM(int mm) {
+		this.Mins = mm;
+	}
+
+	@Override
+	public void setSS(int ss) {
+		this.Secs = ss;
+	}
+
+	@Override
+	public void setMS(int ms) {
+		this.MSecs = ms;
+	}	
+
+}
