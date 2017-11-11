@@ -1,28 +1,49 @@
 public class CSubtitleSeq implements SubtitleSeq {
 	
-	private List<Subtitle> subList;
+	private LinkedList<Subtitle> subList;
 
 	@Override
 	public void addSubtitle(Subtitle st) {
-		// TODO Auto-generated method stub
-		
+		subList.insert(st);
 	}
 
 	@Override
 	public List<Subtitle> getSubtitles() {
 		// TODO Auto-generated method stub
-		return null;
+		return subList;
 	}
 
 	@Override
 	public Subtitle getSubtitle(Time time) {
-		// TODO Auto-generated method stub
+
+		subList.findFirst();
+
+		while (!subList.last()){
+			if(subList.retrieve().getStartTime().equals(time))
+				return subList.retrieve();
+			else {
+				subList.findNext();  
+			}
+		
+		}
+		if(subList.retrieve().getStartTime().equals(time))
+			return subList.retrieve();
+		
 		return null;
 	}
 
 	@Override
 	public List<Subtitle> getSubtitles(Time startTime, Time endTime) {
-		// TODO Auto-generated method stub
+		// SpSub means the list that contains the subtitles between the specified time 
+		LinkedList<Subtitle> spSub = new LinkedList<Subtitle>();
+		subList.findFirst();
+		while(!subList.last()){
+			if(subList.retrieve().getStartTime() >= startTime && subList.retrieve().getEndTime() <= endTime ){
+				spSub.insert(subList.retrieve());
+			}
+			
+		}
+		
 		return null;
 	}
 
@@ -37,6 +58,26 @@ public class CSubtitleSeq implements SubtitleSeq {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void replace(String str1, String str2) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void shift(int offset) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void cut(Time startTime, Time endTime) {
+		// TODO Auto-generated method stub
+		
+	}
+
+}
 
 	@Override
 	public void replace(String str1, String str2) {
