@@ -1,3 +1,4 @@
+
 public class CSubtitleSeq implements SubtitleSeq {
 	
 	private LinkedList<Subtitle> subList;
@@ -58,26 +59,6 @@ public class CSubtitleSeq implements SubtitleSeq {
 		// TODO Auto-generated method stub
 		
 	}
-
-	@Override
-	public void replace(String str1, String str2) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void shift(int offset) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void cut(Time startTime, Time endTime) {
-		// TODO Auto-generated method stub
-		
-	}
-
-}
 
 	@Override
 	public void replace(String str1, String str2) {
