@@ -1,4 +1,3 @@
-
 public class CSubtitleSeq implements SubtitleSeq {
 	
 	private LinkedList<Subtitle> subList;
@@ -32,20 +31,35 @@ public class CSubtitleSeq implements SubtitleSeq {
 		
 		return null;
 	}
+//	private boolean compareInterval(Time st, Time et){
+//		if(this.startTime.transferToMS()>=st.transferToMS()&&this.endTime.transferToMS()>=et.transferToMS())
+//			return true;
+//		
+//		return false;
+//	}
+	private int transferToMS(Time time){ //this method transfer the time to millisecond 
+		return (time.getHH()*3600000)+(time.getMM()*60000)+(time.getSS()*1000)+(time.getMS());
+	}	
+
 
 	@Override
 	public List<Subtitle> getSubtitles(Time startTime, Time endTime) {
 		// SpSub means the list that contains the subtitles between the specified time 
 		LinkedList<Subtitle> spSub = new LinkedList<Subtitle>();
 		subList.findFirst();
+		int startTimeMS=transferToMS(startTime);//transfer the time of startTime to millisecond
+		int endTimeMS=transferToMS(endTime);//transfer the time of endTime to millisecond
 		while(!subList.last()){
-			if(subList.retrieve().getStartTime() >= startTime && subList.retrieve().getEndTime() <= endTime ){
+			int st=transferToMS(subList.retrieve().getStartTime());//transfer start time in the list to millisecond
+			int et=transferToMS(subList.retrieve().getEndTime());//transfer end time in the list to millisecond
+			if(st>=startTimeMS&&et<=endTimeMS){
 				spSub.insert(subList.retrieve());
+				subList.findNext();
 			}
 			
 		}
 		
-		return null;
+		return spSub;
 	}
 
 	@Override
@@ -79,3 +93,5 @@ public class CSubtitleSeq implements SubtitleSeq {
 	}
 
 }
+
+
