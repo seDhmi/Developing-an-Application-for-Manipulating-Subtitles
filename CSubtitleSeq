@@ -65,13 +65,34 @@ public class CSubtitleSeq implements SubtitleSeq {
 	@Override
 	public List<Subtitle> getSubtitles(String str) {
 		// TODO Auto-generated method stub
-		return null;
+		subList.findFirst();
+		LinkedList<Subtitle> spSub = new LinkedList<Subtitle>();
+		
+		while (!subList.last()){
+			if(subList.retrieve().getText().contains(str)){
+				spSub.insert(subList.retrieve());
+			}
+			subList.findNext();
+		}
+		if(subList.retrieve().getText().contains(str)){
+			spSub.insert(subList.retrieve());
+		}
+		return spSub;
 	}
 
 	@Override
 	public void remove(String str) {
 		// TODO Auto-generated method stub
-		
+		subList.findFirst();
+		while (!subList.last()){
+			if(subList.retrieve().getText().contains(str)){
+				subList.remove();
+			}
+			subList.findNext();
+		}
+		if(subList.retrieve().getText().contains(str)){
+			subList.remove();
+		}
 	}
 
 	@Override
