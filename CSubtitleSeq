@@ -1,5 +1,5 @@
 public class CSubtitleSeq implements SubtitleSeq {
-	
+
 	private LinkedList<Subtitle> subList;
 
 	@Override
@@ -18,47 +18,45 @@ public class CSubtitleSeq implements SubtitleSeq {
 
 		subList.findFirst();
 
-		while (!subList.last()){
-			if(subList.retrieve().getStartTime().equals(time))
+		while (!subList.last()) {
+			if (subList.retrieve().getStartTime().equals(time))
 				return subList.retrieve();
 			else {
-				subList.findNext();  
+				subList.findNext();
 			}
-		
+
 		}
-		if(subList.retrieve().getStartTime().equals(time))
+		if (subList.retrieve().getStartTime().equals(time))
 			return subList.retrieve();
-		
+
 		return null;
 	}
-//	private boolean compareInterval(Time st, Time et){
-//		if(this.startTime.transferToMS()>=st.transferToMS()&&this.endTime.transferToMS()>=et.transferToMS())
-//			return true;
-//		
-//		return false;
-//	}
-	private int transferToMS(Time time){ //this method transfer the time to millisecond 
-		return (time.getHH()*3600000)+(time.getMM()*60000)+(time.getSS()*1000)+(time.getMS());
-	}	
 
+	private int transferToMS(Time time) { // this method transfer the time to
+											// millisecond
+		return (time.getHH() * 3600000) + (time.getMM() * 60000) + (time.getSS() * 1000) + (time.getMS());
+	}
 
 	@Override
 	public List<Subtitle> getSubtitles(Time startTime, Time endTime) {
-		// SpSub means the list that contains the subtitles between the specified time 
+		// SpSub means the list that contains the subtitles between the
+		// specified time
 		LinkedList<Subtitle> spSub = new LinkedList<Subtitle>();
 		subList.findFirst();
-		int startTimeMS=transferToMS(startTime);//transfer the time of startTime to millisecond
-		int endTimeMS=transferToMS(endTime);//transfer the time of endTime to millisecond
-		while(!subList.last()){
-			int st=transferToMS(subList.retrieve().getStartTime());//transfer start time in the list to millisecond
-			int et=transferToMS(subList.retrieve().getEndTime());//transfer end time in the list to millisecond
-			if(st>=startTimeMS&&et<=endTimeMS){
+		int startTimeMS = transferToMS(startTime);// transfer the time of
+													// startTime to millisecond
+		int endTimeMS = transferToMS(endTime);// transfer the time of endTime to
+												// millisecond
+		while (!subList.last()) {
+			int st = transferToMS(subList.retrieve().getStartTime());// transfer start time in the list  to  millisecond
+			int et = transferToMS(subList.retrieve().getEndTime());// transfer end time in the list to millisecond
+			if (st >= startTimeMS && et <= endTimeMS) {
 				spSub.insert(subList.retrieve());
 				subList.findNext();
 			}
-			
+
 		}
-		
+
 		return spSub;
 	}
 
@@ -67,14 +65,14 @@ public class CSubtitleSeq implements SubtitleSeq {
 		// TODO Auto-generated method stub
 		subList.findFirst();
 		LinkedList<Subtitle> spSub = new LinkedList<Subtitle>();
-		
-		while (!subList.last()){
-			if(subList.retrieve().getText().contains(str)){
+
+		while (!subList.last()) {
+			if (subList.retrieve().getText().contains(str)) {
 				spSub.insert(subList.retrieve());
 			}
 			subList.findNext();
 		}
-		if(subList.retrieve().getText().contains(str)){
+		if (subList.retrieve().getText().contains(str)) {
 			spSub.insert(subList.retrieve());
 		}
 		return spSub;
@@ -84,13 +82,13 @@ public class CSubtitleSeq implements SubtitleSeq {
 	public void remove(String str) {
 		// TODO Auto-generated method stub
 		subList.findFirst();
-		while (!subList.last()){
-			if(subList.retrieve().getText().contains(str)){
+		while (!subList.last()) {
+			if (subList.retrieve().getText().contains(str)) {
 				subList.remove();
 			}
 			subList.findNext();
 		}
-		if(subList.retrieve().getText().contains(str)){
+		if (subList.retrieve().getText().contains(str)) {
 			subList.remove();
 		}
 	}
@@ -98,21 +96,59 @@ public class CSubtitleSeq implements SubtitleSeq {
 	@Override
 	public void replace(String str1, String str2) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void shift(int offset) {
-		// TODO Auto-generated method stub
-		
+		subList.findFirst();
+
+		while (!subList.last()) {
+			int StartTime = transferToMS(subList.retrieve().getStartTime());
+			int EndTime = transferToMS(subList.retrieve().getEndTime());
+			StartTime += offset;
+			EndTime += offset;
+			if (EndTime == 0)
+				subList.remove();
+
+			if (StartTime < 0) {
+				StartTime = 0;
+			} else if (EndTime < 0) {
+				EndTime = 0;
+			}
+			subList.findNext();
+		}
+		int StartTime = transferToMS(subList.retrieve().getStartTime());
+		int EndTime = transferToMS(subList.retrieve().getEndTime());
+		StartTime += offset;
+		EndTime += offset;
+		if (EndTime == 0)
+			subList.remove();
 	}
 
 	@Override
 	public void cut(Time startTime, Time endTime) {
-		// TODO Auto-generated method stub
+		subList.findFirst();
 		
+		int STM = transferToMS(startTime); // Given Start time to miliseconds
+		int ETM = transferToMS(endTime); // Given End time to miliseconds
+		int Gap = 0;
+		while(!subList.last()){
+			int subST = transferToMS(subList.retrieve().getStartTime());
+			int subET = transferToMS(subList.retrieve().getEndTime());
+			Gap += (subET - subST);
+			if(subST >= STM && subET <= ETM){
+				subList.remove();
+			}
+			subList.findNext();
+		}
+		
+		int subST = transferToMS(subList.retrieve().getStartTime());
+		int subET = transferToMS(subList.retrieve().getEndTime());
+		Gap += (subET - subST);
+		if(subST >= STM && subET <= ETM){
+			subList.remove();
+		}
+		shift(Gap);
 	}
-
 }
-
-
