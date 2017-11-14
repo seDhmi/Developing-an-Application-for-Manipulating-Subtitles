@@ -8,13 +8,23 @@ public class CSubtitleSeq implements SubtitleSeq {
 
 	@Override
 	public void addSubtitle(Subtitle st) {
+		int stStart=transferToMS(st.getStartTime());
+		int stEnd=transferToMS(st.getEndTime());
+		int size =0;
 		if(subList.empty()){
 			subList.insert(st);
+		}else subList.findFirst(); 
+		 
+		if(stEnd<transferToMS(subList.retrieve().getStartTime())){
+			Subtitle tmp=subList.retrieve();
+			subList.insert(st);
+			subList.findFirst();
+			subList.update(st);
+			subList.findNext();
+			subList.update(tmp);
 		}else{
 			subList.findFirst();
-			int stStart=transferToMS(st.getStartTime());
-			int stEnd=transferToMS(st.getEndTime());
-			int size =0;
+			
 			while (!subList.last()){
 				subList.findNext();
                 size++;
@@ -31,7 +41,8 @@ public class CSubtitleSeq implements SubtitleSeq {
 					subList.findNext();
 				int subStart1=transferToMS(subList.retrieve().getStartTime());
 				if(stEnd<subStart1){
-					for(int j=0;j<=i;j++){
+					subList.findFirst();
+					for(int j=0;j<i;j++){
 						subList.findNext();
 					}
 					subList.insert(st);
@@ -184,7 +195,7 @@ public class CSubtitleSeq implements SubtitleSeq {
 			int subST = transferToMS(subList.retrieve().getStartTime());
 			int subET = transferToMS(subList.retrieve().getEndTime());
 			Gap += (subET - subST);
-			if(subST >= STM && subET <= ETM){
+			if(subST >= STM || subET <= ETM){
 				subList.remove();
 			}
 			subList.findNext();
@@ -193,7 +204,7 @@ public class CSubtitleSeq implements SubtitleSeq {
 		int subST = transferToMS(subList.retrieve().getStartTime());
 		int subET = transferToMS(subList.retrieve().getEndTime());
 		Gap += (subET - subST);
-		if(subST >= STM && subET <= ETM){
+		if(subST >= STM || subET <= ETM){
 			subList.remove();
 		}
 		shift(Gap);
