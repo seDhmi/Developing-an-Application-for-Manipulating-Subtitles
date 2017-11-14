@@ -1,0 +1,74 @@
+
+public class test {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		CTime ts1 = new CTime(00,03,12,113);
+		CTime te1 = new CTime(00,04,9,003);
+		CSubtitle sub1 = new CSubtitle();
+		sub1.setStartTime(ts1);
+		sub1.setEndTime(te1);
+		sub1.setText("hi ");
+		
+		CTime ts2 = new CTime(00,6,12,113);
+		CTime te2 = new CTime(00,7,9,003);
+		CSubtitle sub2 = new CSubtitle();
+		sub2.setStartTime(ts2);
+		sub2.setEndTime(te2);
+		sub2.setText("mm");
+		
+		CTime ts3 = new CTime(00,8,12,113);
+		CTime te3 = new CTime(00,9,9,003);
+		CSubtitle sub3 = new CSubtitle();
+		sub3.setStartTime(ts3);
+		sub3.setEndTime(te3);
+		sub3.setText("gky ");
+		CSubtitleSeq list = new CSubtitleSeq();
+		
+		list.addSubtitle(sub2);
+		list.addSubtitle(sub1);
+		list.addSubtitle(sub3);
+		printList(list);
+	}
+	public static void printList(CSubtitleSeq list){
+		list.getSubtitles().findFirst();
+		while(!list.getSubtitles().last()){
+		
+		int sHours=list.getSubtitles().retrieve().getStartTime().getHH();
+		int sMins=list.getSubtitles().retrieve().getStartTime().getMM();
+		int sSecs=list.getSubtitles().retrieve().getStartTime().getSS();
+		int sMSecs=list.getSubtitles().retrieve().getStartTime().getMS();
+		
+		int eHours=list.getSubtitles().retrieve().getEndTime().getHH();
+		int eMins=list.getSubtitles().retrieve().getEndTime().getMM();
+		int eSecs=list.getSubtitles().retrieve().getEndTime().getSS();
+		int eMSecs=list.getSubtitles().retrieve().getEndTime().getMS();
+		
+		String text=list.getSubtitles().retrieve().getText();
+	
+		System.out.print(sHours+":"+sMins+":"+sSecs+","+sMSecs+" ");
+		System.out.print("--> ");
+		System.out.println(eHours+":"+eMins+":"+eSecs+","+eMSecs);
+		System.out.println(text);
+		list.getSubtitles().findNext();
+		}
+		int sHours=list.getSubtitles().retrieve().getStartTime().getHH();
+		int sMins=list.getSubtitles().retrieve().getStartTime().getMM();
+		int sSecs=list.getSubtitles().retrieve().getStartTime().getSS();
+		int sMSecs=list.getSubtitles().retrieve().getStartTime().getMS();
+		
+		int eHours=list.getSubtitles().retrieve().getEndTime().getHH();
+		int eMins=list.getSubtitles().retrieve().getEndTime().getMM();
+		int eSecs=list.getSubtitles().retrieve().getEndTime().getSS();
+		int eMSecs=list.getSubtitles().retrieve().getEndTime().getMS();
+		
+		String text=list.getSubtitles().retrieve().getText();
+	
+		System.out.print(sHours+":"+sMins+":"+sSecs+","+sMSecs+" ");
+		System.out.print("--> ");
+		System.out.println(eHours+":"+eMins+":"+eSecs+","+eMSecs);
+		System.out.println(text);
+		
+	}
+
+}
