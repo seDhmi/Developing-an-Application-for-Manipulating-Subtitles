@@ -1,11 +1,51 @@
 public class CSubtitleSeq implements SubtitleSeq {
 
 	private LinkedList<Subtitle> subList;
+	
+	private int transferToMS(Time time) { // this method transfer the time to millisecond						
+		return (time.getHH() * 3600000) + (time.getMM() * 60000) + (time.getSS() * 1000) + (time.getMS());
+	}
 
 	@Override
 	public void addSubtitle(Subtitle st) {
-		subList.insert(st);
+		if(subList.empty()){
+			subList.insert(st);
+		}else{
+			subList.findFirst();
+			int stStart=transferToMS(st.getStartTime());
+			int stEnd=transferToMS(st.getEndTime());
+			int size =0;
+			while (!subList.last()){
+				subList.findNext();
+                size++;
+			}
+			 size++;
+			int subEnd=transferToMS(subList.retrieve().getEndTime());
+			if(stStart>subEnd){
+				subList.insert(st);
+			}else{
+				subList.findFirst();
+			for(int i=0;i<size;i++){
+				int subEnd1=transferToMS(subList.retrieve().getEndTime());
+				if(stStart>subEnd1){
+					subList.findNext();
+				int subStart1=transferToMS(subList.retrieve().getStartTime());
+				if(stEnd<subStart1){
+					for(int j=0;j<=i;j++){
+						subList.findNext();
+					}
+					subList.insert(st);
+					return;
+				}	
+				}
+				subList.findNext();
+			}
+			}
+		}
+		
+		
 	}
+
 
 	@Override
 	public List<Subtitle> getSubtitles() {
@@ -32,10 +72,7 @@ public class CSubtitleSeq implements SubtitleSeq {
 		return null;
 	}
 
-	private int transferToMS(Time time) { // this method transfer the time to
-											// millisecond
-		return (time.getHH() * 3600000) + (time.getMM() * 60000) + (time.getSS() * 1000) + (time.getMS());
-	}
+	
 
 	@Override
 	public List<Subtitle> getSubtitles(Time startTime, Time endTime) {
@@ -96,8 +133,18 @@ public class CSubtitleSeq implements SubtitleSeq {
 	@Override
 	public void replace(String str1, String str2) {
 		// TODO Auto-generated method stub
-
+		subList.findFirst();
+		
+		while(!subList.last()){
+			if(subList.retrieve().getText().contains(str1))
+				subList.retrieve().getText().replaceAll(str1, str2);
+			subList.findNext();
+		}
+		if(subList.retrieve().getText().contains(str1))
+			subList.retrieve().getText().replaceAll(str1, str2);
+		
 	}
+
 
 	@Override
 	public void shift(int offset) {
