@@ -49,7 +49,7 @@ public class test {
 		System.out.print(sHours+":"+sMins+":"+sSecs+","+sMSecs+" ");
 		System.out.print("--> ");
 		System.out.println(eHours+":"+eMins+":"+eSecs+","+eMSecs);
-		System.out.println(text);
+		System.out.println(text+"\n");
 		list.getSubtitles().findNext();
 		}
 		int sHours=list.getSubtitles().retrieve().getStartTime().getHH();
