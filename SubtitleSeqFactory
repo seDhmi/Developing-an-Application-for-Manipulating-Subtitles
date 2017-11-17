@@ -1,6 +1,12 @@
-public class SubtitleSeqFactory {
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Scanner;
 
-	public static SubtitleSeq subtitleseq = new CSubtitleSeq();
+
+public class SubtitleSeqFactory {
+	
+	private static SubtitleSeq subtitleseq = new CSubtitleSeq();
 	// Return an empty subtitles sequence 
 	public static SubtitleSeq getSubtitleSeq() {
 		return subtitleseq;
@@ -8,7 +14,93 @@ public class SubtitleSeqFactory {
 
 	// Load a subtitle sequence from an SRT file. If the file does not exist or
 	// is corrupted (incorrect format), null is returned.
-	public static SubtitleSeq loadSubtitleSeq(String fileName) {
+	public static SubtitleSeq loadSubtitleSeq(String fileName) throws  IOException  {
+		
+//		FileReader f = new File("C:\\Users\\WELCOM\\Desktop\\winnie-the-pooh-2011.srt");
+//		 Scanner scanner=new Scanner(new FileReader("C:\\Users\\WELCOM\\Desktop\\winnie-the-pooh-2011.srt"));
+		 
+		if(openFile(fileName)){
+			FileReader f=new FileReader(fileName);
+			 Scanner scanner=new Scanner(f);
+			 
+			while(scanner.hasNextLine()){
+			Subtitle subtitle = new CSubtitle();
+			
+			String m = scanner.nextLine();
+			if(!m.isEmpty()){
+			 String time =scanner.nextLine();
+			 subtitle.setStartTime(start(time));
+			 subtitle.setEndTime(end(time));
+			 String text = scanner.nextLine();
+			 String text1 = scanner.nextLine();
+			 if(!text1.isEmpty()){
+				 subtitle.setText(text+"\n"+text1);
+				 subtitleseq.addSubtitle(subtitle);
+			 if(scanner.hasNextLine())
+				 scanner.nextLine();
+			 }else{
+			 subtitle.setText(text);
+			 subtitleseq.addSubtitle(subtitle);
+			 }
+			 
+		}
+		}
+			f.close();
+			return subtitleseq;	
+		}
+		 
+            return null;
+		
 		
 	}
-}
+	private static Time start(String str){
+		Time t = new CTime();
+		Integer h=0;
+		h=h.parseInt(str.substring(0,2));
+		t.setHH(h);
+		
+		Integer m=0;
+		m=m.parseInt(str.substring(3,5));
+		t.setMM(m);
+		
+		Integer s=0;
+		s=s.parseInt(str.substring(6,8));
+		t.setSS(s);
+		
+		Integer ms=0;
+		ms=ms.parseInt(str.substring(9,12));
+		t.setMS(ms);
+		
+		return t;
+		
+	}
+	private static Time end(String str){
+		Time t = new CTime();
+		Integer h=0;
+		h=h.parseInt(str.substring(17,19));
+		t.setHH(h);
+		
+		Integer m=0;
+		m=m.parseInt(str.substring(20,22));
+		t.setMM(m);
+		
+		Integer s=0;
+		s=s.parseInt(str.substring(23,25));
+		t.setSS(s);
+		
+		Integer ms=0;
+		ms=ms.parseInt(str.substring(26,29));
+		t.setMS(ms);
+		
+		return t;
+		
+	}
+	private static boolean openFile(String fileName) throws FileNotFoundException{
+		try{
+		new FileReader(fileName);
+		return true;
+		}catch (Exception e){
+			System.out.println("file doesn't exsist");
+			return false;
+		}
+	}
