@@ -30,13 +30,15 @@ public class CSubtitleSeq implements SubtitleSeq {
                 size++;
 			}
 			 size++;
+			 
 			int subEnd=transferToMS(subList.retrieve().getEndTime());
 			if(stStart>subEnd){
 				subList.insert(st);
 			}else{
 				subList.findFirst();
+				
 			for(int i=0;i<size;i++){
-				int subEnd1=transferToMS(subList.retrieve().getEndTime());
+				int subEnd1=transferToMS(subList.retrieve().getEndTime());//there is a problem
 				if(stStart>subEnd1){
 					subList.findNext();
 				int subStart1=transferToMS(subList.retrieve().getStartTime());
@@ -49,13 +51,14 @@ public class CSubtitleSeq implements SubtitleSeq {
 					return;
 				}	
 				}
-				subList.findNext();
+//				subList.findNext();
 			}
 			}
 		}
 		
 		
 	}
+
 
 
 	@Override
