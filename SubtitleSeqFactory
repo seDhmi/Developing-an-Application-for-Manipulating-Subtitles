@@ -100,7 +100,7 @@ public class SubtitleSeqFactory {
 		new FileReader(fileName);
 		return true;
 		}catch (Exception e){
-			System.out.println("file doesn't exsist");
+			System.out.println("file doesn't exist ");
 			return false;
 		}
 	}
