@@ -72,17 +72,17 @@ public class CSubtitleSeq implements SubtitleSeq {
 
 		subList.findFirst();
 
-		while (!subList.last()) {
-			if (subList.retrieve().getStartTime().equals(time))
+		while (!subList.last()){
+			if(subList.retrieve().getStartTime().equals(time)||subList.retrieve().getEndTime().equals(time))
 				return subList.retrieve();
 			else {
-				subList.findNext();
+				subList.findNext();  
 			}
-
+		
 		}
-		if (subList.retrieve().getStartTime().equals(time))
+		if(subList.retrieve().getStartTime().equals(time)||subList.retrieve().getEndTime().equals(time))
 			return subList.retrieve();
-
+		
 		return null;
 	}
 
