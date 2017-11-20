@@ -1,6 +1,6 @@
 public class CSubtitleSeq implements SubtitleSeq {
 
-	private LinkedList<Subtitle> subList;
+	private LinkedList<Subtitle> subList = new LinkedList<Subtitle>();
 	
 	private int transferToMS(Time time) { // this method transfer the time to millisecond						
 		return (time.getHH() * 3600000) + (time.getMM() * 60000) + (time.getSS() * 1000) + (time.getMS());
