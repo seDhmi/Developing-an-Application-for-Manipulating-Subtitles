@@ -70,5 +70,50 @@ public class test {
 		System.out.println(text);
 		
 	}
+	
+	public static void printList(List<Subtitle> list){
+		if(list.empty()){
+			System.out.println("null");
+		}else{
+		list.findFirst();
+		while(!list.last()){
+		
+		int sHours=list.retrieve().getStartTime().getHH();
+		int sMins=list.retrieve().getStartTime().getMM();
+		int sSecs=list.retrieve().getStartTime().getSS();
+		int sMSecs=list.retrieve().getStartTime().getMS();
+		
+		int eHours=list.retrieve().getEndTime().getHH();
+		int eMins=list.retrieve().getEndTime().getMM();
+		int eSecs=list.retrieve().getEndTime().getSS();
+		int eMSecs=list.retrieve().getEndTime().getMS();
+		
+		String text=list.retrieve().getText();
+	
+		System.out.print(sHours+":"+sMins+":"+sSecs+","+sMSecs+" ");
+		System.out.print("--> ");
+		System.out.println(eHours+":"+eMins+":"+eSecs+","+eMSecs);
+		System.out.println(text+"\n");
+		list.findNext();
+		}
+		int sHours=list.retrieve().getStartTime().getHH();
+		int sMins=list.retrieve().getStartTime().getMM();
+		int sSecs=list.retrieve().getStartTime().getSS();
+		int sMSecs=list.retrieve().getStartTime().getMS();
+		
+		int eHours=list.retrieve().getEndTime().getHH();
+		int eMins=list.retrieve().getEndTime().getMM();
+		int eSecs=list.retrieve().getEndTime().getSS();
+		int eMSecs=list.retrieve().getEndTime().getMS();
+		
+		String text=list.retrieve().getText();
+	
+		System.out.print(sHours+":"+sMins+":"+sSecs+","+sMSecs+" ");
+		System.out.print("--> ");
+		System.out.println(eHours+":"+eMins+":"+eSecs+","+eMSecs);
+		System.out.println(text);
+		}
+	}
+
 
 }
