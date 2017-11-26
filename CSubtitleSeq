@@ -5,6 +5,17 @@ public class CSubtitleSeq implements SubtitleSeq {
 	private int transferToMS(Time time) { // this method transfer the time to millisecond						
 		return (time.getHH() * 3600000) + (time.getMM() * 60000) + (time.getSS() * 1000) + (time.getMS());
 	}
+	private Time transferFromMS(int milliseconed){
+		Time time=new CTime();
+		time.setHH(milliseconed/3600000);
+		milliseconed %=3600000;
+		time.setMM(milliseconed/60000);
+		milliseconed %=60000;
+		time.setSS(milliseconed/1000);
+		milliseconed %=1000;
+		time.setMS(milliseconed);
+		return time;
+	}
 
 	@Override
 	public void addSubtitle(Subtitle st) {
@@ -90,24 +101,31 @@ public class CSubtitleSeq implements SubtitleSeq {
 
 	@Override
 	public List<Subtitle> getSubtitles(Time startTime, Time endTime) {
-		// SpSub means the list that contains the subtitles between the
-		// specified time
-		LinkedList<Subtitle> spSub = new LinkedList<Subtitle>();
+		// SpSub means the list that contains the subtitles between the specified time 
+		List<Subtitle> spSub = new LinkedList<Subtitle>();
 		subList.findFirst();
-		int startTimeMS = transferToMS(startTime);// transfer the time of
-													// startTime to millisecond
-		int endTimeMS = transferToMS(endTime);// transfer the time of endTime to
-												// millisecond
-		while (!subList.last()) {
-			int st = transferToMS(subList.retrieve().getStartTime());// transfer start time in the list  to  millisecond
-			int et = transferToMS(subList.retrieve().getEndTime());// transfer end time in the list to millisecond
-			if (st >= startTimeMS && et <= endTimeMS) {
+		int startTimeMS=transferToMS(startTime);//transfer the time of startTime to millisecond
+		int endTimeMS=transferToMS(endTime);//transfer the time of endTime to millisecond
+		while(!subList.last()){
+			int st=transferToMS(subList.retrieve().getStartTime());//transfer start time in the list to millisecond
+			int et=transferToMS(subList.retrieve().getEndTime());//transfer end time in the list to millisecond
+			if(st<=startTimeMS&&et>=startTimeMS){
 				spSub.insert(subList.retrieve());
-				subList.findNext();
+//				subList.findNext();
+			}else if(st<=endTimeMS&&et>=endTimeMS){
+				spSub.insert(subList.retrieve());
+			}else if(st>=startTimeMS&&et<=endTimeMS){
+				spSub.insert(subList.retrieve());
 			}
-
+			subList.findNext();
 		}
-
+		if(transferToMS(subList.retrieve().getStartTime())<=startTimeMS&&transferToMS(subList.retrieve().getEndTime())>=startTimeMS){
+			spSub.insert(subList.retrieve());
+			}else if(transferToMS(subList.retrieve().getStartTime())<=endTimeMS&&transferToMS(subList.retrieve().getEndTime())>=endTimeMS){
+				spSub.insert(subList.retrieve());
+			}else if(transferToMS(subList.retrieve().getStartTime())>=startTimeMS&&transferToMS(subList.retrieve().getEndTime())<=endTimeMS){
+				spSub.insert(subList.retrieve());
+			}
 		return spSub;
 	}
 
@@ -116,14 +134,14 @@ public class CSubtitleSeq implements SubtitleSeq {
 		// TODO Auto-generated method stub
 		subList.findFirst();
 		LinkedList<Subtitle> spSub = new LinkedList<Subtitle>();
-
-		while (!subList.last()) {
-			if (subList.retrieve().getText().contains(str)) {
+		
+		while (!subList.last()){
+			if(subList.retrieve().getText().contains(str)){
 				spSub.insert(subList.retrieve());
 			}
 			subList.findNext();
 		}
-		if (subList.retrieve().getText().contains(str)) {
+		if(subList.retrieve().getText().contains(str)){
 			spSub.insert(subList.retrieve());
 		}
 		return spSub;
@@ -133,13 +151,13 @@ public class CSubtitleSeq implements SubtitleSeq {
 	public void remove(String str) {
 		// TODO Auto-generated method stub
 		subList.findFirst();
-		while (!subList.last()) {
-			if (subList.retrieve().getText().contains(str)) {
+		while (!subList.last()){
+			if(subList.retrieve().getText().contains(str)){
 				subList.remove();
-			}
+			}else
 			subList.findNext();
 		}
-		if (subList.retrieve().getText().contains(str)) {
+		if(subList.retrieve().getText().contains(str)){
 			subList.remove();
 		}
 	}
@@ -148,17 +166,20 @@ public class CSubtitleSeq implements SubtitleSeq {
 	public void replace(String str1, String str2) {
 		// TODO Auto-generated method stub
 		subList.findFirst();
-		
+		String s="";
 		while(!subList.last()){
-			if(subList.retrieve().getText().contains(str1))
-				subList.retrieve().getText().replaceAll(str1, str2);
+			
+			if(subList.retrieve().getText().contains(str1)){
+			s=subList.retrieve().getText().replace(str1, str2);
+			subList.retrieve().setText(s);
+			}
 			subList.findNext();
 		}
-		if(subList.retrieve().getText().contains(str1))
-			subList.retrieve().getText().replaceAll(str1, str2);
-		
+		if(subList.retrieve().getText().contains(str1)){
+			s=subList.retrieve().getText().replace(str1, str2);
+			subList.retrieve().setText(s);
+		}
 	}
-
 
 	@Override
 	public void shift(int offset) {
@@ -169,22 +190,34 @@ public class CSubtitleSeq implements SubtitleSeq {
 			int EndTime = transferToMS(subList.retrieve().getEndTime());
 			StartTime += offset;
 			EndTime += offset;
-			if (EndTime == 0)
-				subList.remove();
-
-			if (StartTime < 0) {
-				StartTime = 0;
-			} else if (EndTime < 0) {
-				EndTime = 0;
+			subList.retrieve().setStartTime(transferFromMS(StartTime));
+			subList.retrieve().setEndTime(transferFromMS(EndTime));
+			if (transferToMS(subList.retrieve().getStartTime())< 0) {
+				subList.retrieve().setStartTime(transferFromMS(0));
+			}if (transferToMS(subList.retrieve().getEndTime()) < 0) {
+				subList.retrieve().setEndTime(transferFromMS(0));
 			}
+			if (transferToMS(subList.retrieve().getEndTime()) == 0){
+				subList.remove();
+			}else{
 			subList.findNext();
+		}
 		}
 		int StartTime = transferToMS(subList.retrieve().getStartTime());
 		int EndTime = transferToMS(subList.retrieve().getEndTime());
 		StartTime += offset;
 		EndTime += offset;
-		if (EndTime == 0)
+		subList.retrieve().setStartTime(transferFromMS(StartTime));
+		subList.retrieve().setEndTime(transferFromMS(EndTime));
+		if (transferToMS(subList.retrieve().getStartTime())< 0) {
+			subList.retrieve().setStartTime(transferFromMS(0));
+		}if (transferToMS(subList.retrieve().getEndTime()) < 0) {
+			subList.retrieve().setEndTime(transferFromMS(0));
+		}
+		if (transferToMS(subList.retrieve().getEndTime()) == 0){
 			subList.remove();
+		}
+	
 	}
 
 	@Override
