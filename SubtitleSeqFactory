@@ -1,3 +1,4 @@
+
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -9,7 +10,7 @@ public class SubtitleSeqFactory {
 	private static SubtitleSeq subtitleseq = new CSubtitleSeq();
 	// Return an empty subtitles sequence 
 	public static SubtitleSeq getSubtitleSeq() {
-		return subtitleseq;
+		return new CSubtitleSeq();
 	}
 
 	// Load a subtitle sequence from an SRT file. If the file does not exist or
@@ -22,13 +23,16 @@ public class SubtitleSeqFactory {
 		if(openFile(fileName)){
 			FileReader f=new FileReader(fileName);
 			 Scanner scanner=new Scanner(f);
-			 
+			 int number=0;
 			while(scanner.hasNextLine()){
 			Subtitle subtitle = new CSubtitle();
 			
 			String m = scanner.nextLine();
+			if(++number==Integer.valueOf(m)){
 			if(!m.isEmpty()){
 			 String time =scanner.nextLine();
+			 if(transferToMS(start(time))>transferToMS(end(time)))
+			 return null;
 			 subtitle.setStartTime(start(time));
 			 subtitle.setEndTime(end(time));
 			 String text = scanner.nextLine();
@@ -44,6 +48,9 @@ public class SubtitleSeqFactory {
 			 }
 			 
 		}
+			}
+			else
+				return null;
 		}
 			f.close();
 			return subtitleseq;	
@@ -104,3 +111,77 @@ public class SubtitleSeqFactory {
 			return false;
 		}
 	}
+	private static void printList(SubtitleSeq subtitleSeq){
+		if(subtitleSeq.getSubtitles().empty()){
+			System.out.println("null");
+		}else{
+		subtitleSeq.getSubtitles().findFirst();
+		while(!subtitleSeq.getSubtitles().last()){
+		
+		int sHours=subtitleSeq.getSubtitles().retrieve().getStartTime().getHH();
+		int sMins=subtitleSeq.getSubtitles().retrieve().getStartTime().getMM();
+		int sSecs=subtitleSeq.getSubtitles().retrieve().getStartTime().getSS();
+		int sMSecs=subtitleSeq.getSubtitles().retrieve().getStartTime().getMS();
+		
+		int eHours=subtitleSeq.getSubtitles().retrieve().getEndTime().getHH();
+		int eMins=subtitleSeq.getSubtitles().retrieve().getEndTime().getMM();
+		int eSecs=subtitleSeq.getSubtitles().retrieve().getEndTime().getSS();
+		int eMSecs=subtitleSeq.getSubtitles().retrieve().getEndTime().getMS();
+		
+		String text=subtitleSeq.getSubtitles().retrieve().getText();
+	
+		System.out.print(sHours+":"+sMins+":"+sSecs+","+sMSecs+" ");
+		System.out.print("--> ");
+		System.out.println(eHours+":"+eMins+":"+eSecs+","+eMSecs);
+		System.out.println(text+"\n");
+		subtitleSeq.getSubtitles().findNext();
+		}
+		int sHours=subtitleSeq.getSubtitles().retrieve().getStartTime().getHH();
+		int sMins=subtitleSeq.getSubtitles().retrieve().getStartTime().getMM();
+		int sSecs=subtitleSeq.getSubtitles().retrieve().getStartTime().getSS();
+		int sMSecs=subtitleSeq.getSubtitles().retrieve().getStartTime().getMS();
+		
+		int eHours=subtitleSeq.getSubtitles().retrieve().getEndTime().getHH();
+		int eMins=subtitleSeq.getSubtitles().retrieve().getEndTime().getMM();
+		int eSecs=subtitleSeq.getSubtitles().retrieve().getEndTime().getSS();
+		int eMSecs=subtitleSeq.getSubtitles().retrieve().getEndTime().getMS();
+		
+		String text=subtitleSeq.getSubtitles().retrieve().getText();
+	
+		System.out.print(sHours+":"+sMins+":"+sSecs+","+sMSecs+" ");
+		System.out.print("--> ");
+		System.out.println(eHours+":"+eMins+":"+eSecs+","+eMSecs);
+		System.out.println(text);
+		}
+	}
+	private static int transferToMS(Time time){ //this method transfer the time to millisecond 
+		return ((time.getHH()*3600000)+(time.getMM()*60000)+(time.getSS()*1000)+(time.getMS()));
+	}	
+	
+//	private static boolean openFile(String fileName){
+//		try{
+//			temp = new Scanner(new File(fileName));
+//			return true;
+//		}catch(FileNotFoundException e){
+//			System.out.println("Couldn't found file");
+//			return false;
+//		}
+//		
+//		
+//	}
+//	private static void readFile(){
+//		Subtitle sub = new CSubtitle();
+//		Time time = new CTime();
+//		while (temp.hasNext()){
+//			
+//		}
+//	}
+//	public static void main(String[]args){
+//File f = new File("C:\\Users\\WELCOM\\Desktop\\winnie-the-pooh-2011.srt");
+//		
+//temp = new Scanner(new File("C:\\Users\\WELCOM\\Desktop\\winnie-the-pooh-2011.srt"));
+//		temp.nextLine();
+//		System.out.println(temp.nextLine());
+//		
+//	}
+}
