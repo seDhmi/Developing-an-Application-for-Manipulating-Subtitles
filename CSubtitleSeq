@@ -1,10 +1,11 @@
 public class CSubtitleSeq implements SubtitleSeq {
-
-	private LinkedList<Subtitle> subList = new LinkedList<Subtitle>();
 	
-	private int transferToMS(Time time) { // this method transfer the time to millisecond						
-		return (time.getHH() * 3600000) + (time.getMM() * 60000) + (time.getSS() * 1000) + (time.getMS());
-	}
+	public List<Subtitle> subList=new LinkedList<Subtitle>();
+
+	private int transferToMS(Time time){ //this method transfer the time to millisecond 
+		return ((time.getHH()*3600000)+(time.getMM()*60000)+(time.getSS()*1000)+(time.getMS()));
+	}	
+	
 	private Time transferFromMS(int milliseconed){
 		Time time=new CTime();
 		time.setHH(milliseconed/3600000);
@@ -16,12 +17,18 @@ public class CSubtitleSeq implements SubtitleSeq {
 		time.setMS(milliseconed);
 		return time;
 	}
-
+	
 	@Override
 	public void addSubtitle(Subtitle st) {
+		
+			
 		int stStart=transferToMS(st.getStartTime());
 		int stEnd=transferToMS(st.getEndTime());
 		int size =0;
+		if(subList.full())
+			return;
+		if(stEnd<=stStart)
+			return;
 		if(subList.empty()){
 			subList.insert(st);
 		}else subList.findFirst(); 
@@ -67,10 +74,45 @@ public class CSubtitleSeq implements SubtitleSeq {
 			}
 			}
 		}
-		
-		
 	}
-
+		
+//			if(subList.full())
+//				return;
+//			if(subList.empty()){
+//				subList.insert(st);
+//				return; }
+//			
+//			subList.findFirst();
+//				while(!subList.last()){
+//					int start = transferToMS(subList.retrieve().getStartTime());
+//					int end = transferToMS(subList.retrieve().getEndTime());
+//					if( ((transferToMS(st.getStartTime()) >= start)&&(transferToMS(st.getStartTime()) <= end))||
+//							((transferToMS(st.getEndTime()) >= start)&&(transferToMS(st.getEndTime())) <= end) ) {
+//							System.out.println("Error, subtitle display time is overlapped!");
+//							return; }
+//					subList.findNext();
+//				}int start = transferToMS(subList.retrieve().getStartTime());
+//				int end = transferToMS(subList.retrieve().getEndTime());
+//				if( ((transferToMS(st.getStartTime()) >= start)&&(transferToMS(st.getStartTime()) <= end))||
+//						((transferToMS(st.getEndTime()) >= start)&&(transferToMS(st.getEndTime())) <= end) ) {
+//						System.out.println("Error, subtitle display time is overlapped!");
+//						return; } 
+//				subList.findFirst();
+//				while(!subList.last()){
+//					if(transferToMS(subList.retrieve().getStartTime()) > transferToMS(st.getStartTime())){
+//							Subtitle data = subList.retrieve();
+//							subList.update(st);
+//							subList.insert(data); return; }
+//					subList.findNext();
+//				}
+//				if(transferToMS(subList.retrieve().getStartTime()) > transferToMS(st.getStartTime())){
+//					Subtitle data = subList.retrieve();
+//					subList.update(st);
+//					subList.insert(data); }
+//				else
+//					subList.insert(st);
+//			}
+//	
 
 	@Override
 	public List<Subtitle> getSubtitles() {
@@ -98,8 +140,14 @@ public class CSubtitleSeq implements SubtitleSeq {
 		
 		return null;
 	}
-
+//	private boolean compareInterval(Time st, Time et){
+//		if(this.startTime.transferToMS()>=st.transferToMS()&&this.endTime.transferToMS()>=et.transferToMS())
+//			return true;
+//		
+//		return false;
+//	}
 	
+
 
 	@Override
 	public List<Subtitle> getSubtitles(Time startTime, Time endTime) {
@@ -151,7 +199,9 @@ public class CSubtitleSeq implements SubtitleSeq {
 
 	@Override
 	public void remove(String str) {
-		// TODO Auto-generated method stub
+		
+		if(subList.empty())
+			return;
 		subList.findFirst();
 		while (!subList.last()){
 			if(subList.retrieve().getText().contains(str)){
@@ -162,6 +212,7 @@ public class CSubtitleSeq implements SubtitleSeq {
 		if(subList.retrieve().getText().contains(str)){
 			subList.remove();
 		}
+	
 	}
 
 	@Override
@@ -228,20 +279,20 @@ public class CSubtitleSeq implements SubtitleSeq {
 		
 		int STM = transferToMS(startTime); // Given Start time to miliseconds
 		int ETM = transferToMS(endTime); // Given End time to miliseconds
-		int Gap = 0;
+//		int Gap = 0;
 		while(!subList.last()){
 			int subST = transferToMS(subList.retrieve().getStartTime());
 			int subET = transferToMS(subList.retrieve().getEndTime());
 			
 			if(subST <= STM && subET >= STM){
 				subList.remove();
-				Gap += (subET - subST);
+//				Gap += (subET - subST);
 			}else if(subST <= ETM && subET >= ETM){
 				subList.remove();
-				Gap += (subET - subST);
+//				Gap += (subET - subST);
 			}else if(subST >= STM && subET <= ETM){
 				subList.remove();
-				Gap += (subET - subST);
+//				Gap += (subET - subST);
 			}else{
 			subList.findNext();
 			}
@@ -251,21 +302,24 @@ public class CSubtitleSeq implements SubtitleSeq {
 		int subET = transferToMS(subList.retrieve().getEndTime());
 		if(subST <= STM && subET >= STM){
 			subList.remove();
-			Gap += (subET - subST);
+//			Gap += (subET - subST);
 		}else if(subST <= ETM && subET >= ETM){
 			subList.remove();
-			Gap += (subET - subST);
+//			Gap += (subET - subST);
 		}else if(subST >= STM && subET <= ETM){
 			subList.remove();
-			Gap += (subET - subST);
+//			Gap += (subET - subST);
 		}
-		if(transferToMS(subList.retrieve().getStartTime())>ETM){
-			
+		subList.findFirst();
+		while(!subList.last()){
+		if(transferToMS(subList.retrieve().getStartTime())>ETM)
+			break;
+		subList.findNext();}
 			while (!subList.last()) {
 				int StartTime = transferToMS(subList.retrieve().getStartTime());
 				int EndTime = transferToMS(subList.retrieve().getEndTime());
-				StartTime += Gap;
-				EndTime += Gap;
+				StartTime -= ((ETM-STM)+1);
+				EndTime -= ((ETM-STM)+1);
 				subList.retrieve().setStartTime(transferFromMS(StartTime));
 				subList.retrieve().setEndTime(transferFromMS(EndTime));
 				if (transferToMS(subList.retrieve().getStartTime())< 0) {
@@ -281,8 +335,8 @@ public class CSubtitleSeq implements SubtitleSeq {
 			}
 			int StartTime = transferToMS(subList.retrieve().getStartTime());
 			int EndTime = transferToMS(subList.retrieve().getEndTime());
-			StartTime += Gap;
-			EndTime += Gap;
+			StartTime -= ((ETM-STM)+1);
+			EndTime -= ((ETM-STM)+1);
 			subList.retrieve().setStartTime(transferFromMS(StartTime));
 			subList.retrieve().setEndTime(transferFromMS(EndTime));
 			if (transferToMS(subList.retrieve().getStartTime())< 0) {
@@ -293,6 +347,52 @@ public class CSubtitleSeq implements SubtitleSeq {
 			if (transferToMS(subList.retrieve().getEndTime()) == 0){
 				subList.remove();
 			}
+			
+		
+//		shift(Gap);
+	}
+	public void printList(SubtitleSeq subtitleSeq){
+		if(subtitleSeq.getSubtitles().empty()){
+			System.out.println("null");
+		}else{
+		subtitleSeq.getSubtitles().findFirst();
+		while(!subtitleSeq.getSubtitles().last()){
+		
+		int sHours=subtitleSeq.getSubtitles().retrieve().getStartTime().getHH();
+		int sMins=subtitleSeq.getSubtitles().retrieve().getStartTime().getMM();
+		int sSecs=subtitleSeq.getSubtitles().retrieve().getStartTime().getSS();
+		int sMSecs=subtitleSeq.getSubtitles().retrieve().getStartTime().getMS();
+		
+		int eHours=subtitleSeq.getSubtitles().retrieve().getEndTime().getHH();
+		int eMins=subtitleSeq.getSubtitles().retrieve().getEndTime().getMM();
+		int eSecs=subtitleSeq.getSubtitles().retrieve().getEndTime().getSS();
+		int eMSecs=subtitleSeq.getSubtitles().retrieve().getEndTime().getMS();
+		
+		String text=subtitleSeq.getSubtitles().retrieve().getText();
+	
+		System.out.print(sHours+":"+sMins+":"+sSecs+","+sMSecs+" ");
+		System.out.print("--> ");
+		System.out.println(eHours+":"+eMins+":"+eSecs+","+eMSecs);
+		System.out.println(text+"\n");
+		subtitleSeq.getSubtitles().findNext();
+		}
+		int sHours=subtitleSeq.getSubtitles().retrieve().getStartTime().getHH();
+		int sMins=subtitleSeq.getSubtitles().retrieve().getStartTime().getMM();
+		int sSecs=subtitleSeq.getSubtitles().retrieve().getStartTime().getSS();
+		int sMSecs=subtitleSeq.getSubtitles().retrieve().getStartTime().getMS();
+		
+		int eHours=subtitleSeq.getSubtitles().retrieve().getEndTime().getHH();
+		int eMins=subtitleSeq.getSubtitles().retrieve().getEndTime().getMM();
+		int eSecs=subtitleSeq.getSubtitles().retrieve().getEndTime().getSS();
+		int eMSecs=subtitleSeq.getSubtitles().retrieve().getEndTime().getMS();
+		
+		String text=subtitleSeq.getSubtitles().retrieve().getText();
+	
+		System.out.print(sHours+":"+sMins+":"+sSecs+","+sMSecs+" ");
+		System.out.print("--> ");
+		System.out.println(eHours+":"+eMins+":"+eSecs+","+eMSecs);
+		System.out.println(text);
 		}
 	}
 }
+
