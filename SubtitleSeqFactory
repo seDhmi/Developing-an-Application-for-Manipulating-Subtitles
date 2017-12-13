@@ -4,184 +4,112 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Scanner;
 
-
 public class SubtitleSeqFactory {
-	
+
 	private static SubtitleSeq subtitleseq = new CSubtitleSeq();
-	// Return an empty subtitles sequence 
+
+	// Return an empty subtitles sequence
 	public static SubtitleSeq getSubtitleSeq() {
 		return new CSubtitleSeq();
 	}
 
 	// Load a subtitle sequence from an SRT file. If the file does not exist or
 	// is corrupted (incorrect format), null is returned.
-	public static SubtitleSeq loadSubtitleSeq(String fileName) throws  IOException  {
-		
-//		FileReader f = new File("C:\\Users\\WELCOM\\Desktop\\winnie-the-pooh-2011.srt");
-//		 Scanner scanner=new Scanner(new FileReader("C:\\Users\\WELCOM\\Desktop\\winnie-the-pooh-2011.srt"));
-		 
-		if(openFile(fileName)){
-			FileReader f=new FileReader(fileName);
-			 Scanner scanner=new Scanner(f);
-			 int number=0;
-			while(scanner.hasNextLine()){
-			Subtitle subtitle = new CSubtitle();
-			
-			String m = scanner.nextLine();
-			if(++number==Integer.valueOf(m)){
-			if(!m.isEmpty()){
-			 String time =scanner.nextLine();
-			 if(transferToMS(start(time))>transferToMS(end(time)))
-			 return null;
-			 subtitle.setStartTime(start(time));
-			 subtitle.setEndTime(end(time));
-			 String text = scanner.nextLine();
-			 String text1 = scanner.nextLine();
-			 if(!text1.isEmpty()){
-				 subtitle.setText(text+"\n"+text1);
-				 subtitleseq.addSubtitle(subtitle);
-			 if(scanner.hasNextLine())
-				 scanner.nextLine();
-			 }else{
-			 subtitle.setText(text);
-			 subtitleseq.addSubtitle(subtitle);
-			 }
-			 
-		}
+	public static SubtitleSeq loadSubtitleSeq(String fileName) throws IOException {
+		if (openFile(fileName)) {
+			FileReader f = new FileReader(fileName);
+			Scanner scanner = new Scanner(f);
+			int number = 0;
+
+			while (scanner.hasNextLine()) {
+				Subtitle subtitle = new CSubtitle();
+
+				String m = scanner.nextLine(); // take first line as string
+				if (++number == Integer.valueOf(m)) { // check if the first subtitle start at 1
+					if (!m.isEmpty()) {
+						String time = scanner.nextLine(); // take the line of interval
+						if (transferToMS(start(time)) > transferToMS(end(time))) // check if start time greater than end time
+							return null;
+						subtitle.setStartTime(start(time)); // set the start time into the subtitle
+						subtitle.setEndTime(end(time)); // set the end time into the subtitle
+						String text = scanner.nextLine(); // take the first line of text
+						String text1 = scanner.nextLine(); // take the second line of text
+						if (!text1.isEmpty()) { // check if there is text in the second line
+							subtitle.setText(text + "\n" + text1); // set the text to the subtitle as 2 lines
+							subtitleseq.addSubtitle(subtitle); // add subtitle to the list which is contains - start time - end time - text
+							if (scanner.hasNextLine())
+								scanner.nextLine();
+						} else { // if there is no text in the second line
+							subtitle.setText(text);
+							subtitleseq.addSubtitle(subtitle);
+						}
+					}
+				} else
+					return null;
 			}
-			else
-				return null;
+			f.close(); // close the file
+			return subtitleseq;
 		}
-			f.close();
-			return subtitleseq;	
-		}
-		 
-            return null;
-		
-		
+
+		return null;
 	}
-	private static Time start(String str){
+
+	private static Time start(String str) { // this method take the line of interval of subtitle as string, then return start time of subtitle
 		Time t = new CTime();
-		Integer h=0;
-		h=h.parseInt(str.substring(0,2));
+		Integer h = 0;
+		h = h.parseInt(str.substring(0, 2));
 		t.setHH(h);
-		
-		Integer m=0;
-		m=m.parseInt(str.substring(3,5));
+
+		Integer m = 0;
+		m = m.parseInt(str.substring(3, 5));
 		t.setMM(m);
-		
-		Integer s=0;
-		s=s.parseInt(str.substring(6,8));
+
+		Integer s = 0;
+		s = s.parseInt(str.substring(6, 8));
 		t.setSS(s);
-		
-		Integer ms=0;
-		ms=ms.parseInt(str.substring(9,12));
+
+		Integer ms = 0;
+		ms = ms.parseInt(str.substring(9, 12));
 		t.setMS(ms);
-		
+
 		return t;
-		
+
 	}
-	private static Time end(String str){
+
+	private static Time end(String str) { // this method take the line of interval of subtitle as string, then return end time of subtitle
 		Time t = new CTime();
-		Integer h=0;
-		h=h.parseInt(str.substring(17,19));
+		Integer h = 0;
+		h = h.parseInt(str.substring(17, 19));
 		t.setHH(h);
-		
-		Integer m=0;
-		m=m.parseInt(str.substring(20,22));
+
+		Integer m = 0;
+		m = m.parseInt(str.substring(20, 22));
 		t.setMM(m);
-		
-		Integer s=0;
-		s=s.parseInt(str.substring(23,25));
+
+		Integer s = 0;
+		s = s.parseInt(str.substring(23, 25));
 		t.setSS(s);
-		
-		Integer ms=0;
-		ms=ms.parseInt(str.substring(26,29));
+
+		Integer ms = 0;
+		ms = ms.parseInt(str.substring(26, 29));
 		t.setMS(ms);
-		
+
 		return t;
-		
+
 	}
-	private static boolean openFile(String fileName) throws FileNotFoundException{
-		try{
-		new FileReader(fileName);
-		return true;
-		}catch (Exception e){
+
+	private static boolean openFile(String fileName) throws FileNotFoundException { // this method to open file
+		try {
+			new FileReader(fileName);
+			return true;
+		} catch (Exception e) {
 			System.out.println("file doesn't exist ");
 			return false;
 		}
 	}
-	private static void printList(SubtitleSeq subtitleSeq){
-		if(subtitleSeq.getSubtitles().empty()){
-			System.out.println("null");
-		}else{
-		subtitleSeq.getSubtitles().findFirst();
-		while(!subtitleSeq.getSubtitles().last()){
-		
-		int sHours=subtitleSeq.getSubtitles().retrieve().getStartTime().getHH();
-		int sMins=subtitleSeq.getSubtitles().retrieve().getStartTime().getMM();
-		int sSecs=subtitleSeq.getSubtitles().retrieve().getStartTime().getSS();
-		int sMSecs=subtitleSeq.getSubtitles().retrieve().getStartTime().getMS();
-		
-		int eHours=subtitleSeq.getSubtitles().retrieve().getEndTime().getHH();
-		int eMins=subtitleSeq.getSubtitles().retrieve().getEndTime().getMM();
-		int eSecs=subtitleSeq.getSubtitles().retrieve().getEndTime().getSS();
-		int eMSecs=subtitleSeq.getSubtitles().retrieve().getEndTime().getMS();
-		
-		String text=subtitleSeq.getSubtitles().retrieve().getText();
-	
-		System.out.print(sHours+":"+sMins+":"+sSecs+","+sMSecs+" ");
-		System.out.print("--> ");
-		System.out.println(eHours+":"+eMins+":"+eSecs+","+eMSecs);
-		System.out.println(text+"\n");
-		subtitleSeq.getSubtitles().findNext();
-		}
-		int sHours=subtitleSeq.getSubtitles().retrieve().getStartTime().getHH();
-		int sMins=subtitleSeq.getSubtitles().retrieve().getStartTime().getMM();
-		int sSecs=subtitleSeq.getSubtitles().retrieve().getStartTime().getSS();
-		int sMSecs=subtitleSeq.getSubtitles().retrieve().getStartTime().getMS();
-		
-		int eHours=subtitleSeq.getSubtitles().retrieve().getEndTime().getHH();
-		int eMins=subtitleSeq.getSubtitles().retrieve().getEndTime().getMM();
-		int eSecs=subtitleSeq.getSubtitles().retrieve().getEndTime().getSS();
-		int eMSecs=subtitleSeq.getSubtitles().retrieve().getEndTime().getMS();
-		
-		String text=subtitleSeq.getSubtitles().retrieve().getText();
-	
-		System.out.print(sHours+":"+sMins+":"+sSecs+","+sMSecs+" ");
-		System.out.print("--> ");
-		System.out.println(eHours+":"+eMins+":"+eSecs+","+eMSecs);
-		System.out.println(text);
-		}
+
+	private static int transferToMS(Time time) { // this method transfer the time to millisecond
+		return ((time.getHH() * 3600000) + (time.getMM() * 60000) + (time.getSS() * 1000) + (time.getMS()));
 	}
-	private static int transferToMS(Time time){ //this method transfer the time to millisecond 
-		return ((time.getHH()*3600000)+(time.getMM()*60000)+(time.getSS()*1000)+(time.getMS()));
-	}	
-	
-//	private static boolean openFile(String fileName){
-//		try{
-//			temp = new Scanner(new File(fileName));
-//			return true;
-//		}catch(FileNotFoundException e){
-//			System.out.println("Couldn't found file");
-//			return false;
-//		}
-//		
-//		
-//	}
-//	private static void readFile(){
-//		Subtitle sub = new CSubtitle();
-//		Time time = new CTime();
-//		while (temp.hasNext()){
-//			
-//		}
-//	}
-//	public static void main(String[]args){
-//File f = new File("C:\\Users\\WELCOM\\Desktop\\winnie-the-pooh-2011.srt");
-//		
-//temp = new Scanner(new File("C:\\Users\\WELCOM\\Desktop\\winnie-the-pooh-2011.srt"));
-//		temp.nextLine();
-//		System.out.println(temp.nextLine());
-//		
-//	}
+
 }
