@@ -1,48 +1,82 @@
-public class CTime implements Time {
+public class CTime implements Time,Comparable<CTime> {
 	
-	private int Hours;
-	private int Mins;
-	private int Secs;
-	private int MSecs;
+	private int hours;
+	private int mins;
+	private int secs;
+	private int mSecs;
+	
 
 	@Override
 	public int getHH() {
-		return Hours;
+		return hours;
 	}
 
 	@Override
 	public int getMM() {
-		return Mins;
+		return mins;
 	}
 
 	@Override
 	public int getSS() {
-		return Secs;
+		return secs;
 	}
 
 	@Override
 	public int getMS() {
-		return MSecs;
+		return mSecs;
 	}
 
 	@Override
 	public void setHH(int hh) {
-		this.Hours = hh;
+		this.hours = hh;
 	}
 
 	@Override
 	public void setMM(int mm) {
-		this.Mins = mm;
+		this.mins = mm;
 	}
 
 	@Override
 	public void setSS(int ss) {
-		this.Secs = ss;
+		this.secs = ss;
 	}
 
 	@Override
 	public void setMS(int ms) {
-		this.MSecs = ms;
+		this.mSecs = ms;
+	}
+
+	@Override
+	public int compareTo(CTime o) {
+		// TODO Auto-generated method stub
+		if(this.hours>o.getHH())
+			return 1;
+		if(this.hours<o.getHH())
+			return -1;
+		
+		if(this.mins>o.getMM())
+			return 1;
+		if(this.mins<o.getMM())
+			return -1;
+		
+		if(this.secs>o.getSS())
+			return 1;
+		if(this.secs<o.getSS())
+			return -1;
+		
+		if(this.mSecs>o.getMS())
+			return 1;
+		if(this.mSecs<o.getMS())
+			return -1;
+		
+		return 0;
 	}	
 
 }
+
+
+
+
+
+
+
