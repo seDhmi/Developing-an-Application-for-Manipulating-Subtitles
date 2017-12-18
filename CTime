@@ -5,6 +5,19 @@ public class CTime implements Time,Comparable<CTime> {
 	private int secs;
 	private int mSecs;
 	
+	public CTime(){
+		this.hours=0;
+		this.mins=0;
+		this.secs=0;
+		this.mSecs=0;
+	}
+	public CTime(int hours, int mins, int secs, int mSecs){
+		this.hours=hours;
+		this.mins=mins;
+		this.secs=secs;
+		this.mSecs=mSecs;
+	}
+	
 
 	@Override
 	public int getHH() {
@@ -46,27 +59,26 @@ public class CTime implements Time,Comparable<CTime> {
 		this.mSecs = ms;
 	}
 
-	@Override
-	public int compareTo(CTime o) {
+	public int compareTo(CTime time) {
 		// TODO Auto-generated method stub
-		if(this.hours>o.getHH())
+		if(this.hours>time.getHH())
 			return 1;
-		if(this.hours<o.getHH())
+		if(this.hours<time.getHH())
 			return -1;
 		
-		if(this.mins>o.getMM())
+		if(this.mins>time.getMM())
 			return 1;
-		if(this.mins<o.getMM())
+		if(this.mins<time.getMM())
 			return -1;
 		
-		if(this.secs>o.getSS())
+		if(this.secs>time.getSS())
 			return 1;
-		if(this.secs<o.getSS())
+		if(this.secs<time.getSS())
 			return -1;
 		
-		if(this.mSecs>o.getMS())
+		if(this.mSecs>time.getMS())
 			return 1;
-		if(this.mSecs<o.getMS())
+		if(this.mSecs<time.getMS())
 			return -1;
 		
 		return 0;
