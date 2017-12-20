@@ -46,14 +46,10 @@ public class C_SubtitleSeq implements SubtitleSeq {
 	public Subtitle getSubtitle(Time time) {
 		// TODO Auto-generated method stub
 		TimeInterval key = new TimeInterval(time, time);
-		bst.findFirst();
-		while (!bst.last()) {
-			if (bst.retrieve().first.compareTo(key) == 0)
-				return bst.retrieve().second;
-			bst.findNext();
-		}
-		if (bst.retrieve().first.compareTo(key) == 0)
+
+		if(bst.find(key))
 			return bst.retrieve().second;
+		else
 		return null;
 	}
 
@@ -70,34 +66,23 @@ public class C_SubtitleSeq implements SubtitleSeq {
 	public List<Subtitle> getSubtitles(Time startTime, Time endTime) {
 		// TODO Auto-generated method stub
 		List<Subtitle> spSub = new LinkedList<Subtitle>();
-		bst.findFirst();
-		int startTimeMS = transferToMS(startTime);// transfer the time of
-													// startTime to millisecond
-		int endTimeMS = transferToMS(endTime);
-
-		while (!bst.last()) {
-			int st = transferToMS(bst.retrieve().second.getStartTime());// transfer start time in the list to millisecond
-			int et = transferToMS(bst.retrieve().second.getEndTime());// transfer end time in the list to millisecond
-			if (st <= startTimeMS && et >= startTimeMS) {
-				spSub.insert(bst.retrieve().second);
-			} else if (st <= endTimeMS && et >= endTimeMS) {
-				spSub.insert(bst.retrieve().second);
-			} else if (st >= startTimeMS && et <= endTimeMS) {
-				spSub.insert(bst.retrieve().second);
+		
+		TimeInterval key1 = new TimeInterval(startTime, startTime);
+		TimeInterval key2 = new TimeInterval(endTime, endTime);
+		bst.inRange(key1, key2);
+		List<Pair<TimeInterval,Subtitle>> pair=bst.inRange(key1, key2);
+		
+		if(!pair.empty()){
+			pair.findFirst();
+			while(!pair.last()){
+				spSub.insert(pair.retrieve().second);
+				pair.findNext();
 			}
-			bst.findNext();
-		}
-		if (transferToMS(bst.retrieve().second.getStartTime()) <= startTimeMS
-				&& transferToMS(bst.retrieve().second.getEndTime()) >= startTimeMS) {
-			spSub.insert(bst.retrieve().second);
-		} else if (transferToMS(bst.retrieve().second.getStartTime()) <= endTimeMS
-				&& transferToMS(bst.retrieve().second.getEndTime()) >= endTimeMS) {
-			spSub.insert(bst.retrieve().second);
-		} else if (transferToMS(bst.retrieve().second.getStartTime()) >= startTimeMS
-				&& transferToMS(bst.retrieve().second.getEndTime()) <= endTimeMS) {
-			spSub.insert(bst.retrieve().second);
-		}
+			spSub.insert(pair.retrieve().second);
 		return spSub;
+		}
+//		
+		return null;
 
 	}
 
