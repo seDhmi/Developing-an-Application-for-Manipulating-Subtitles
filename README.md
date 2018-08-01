@@ -1,1 +1,3 @@
-# CSC212Project_FAAN
+# Developing an Application for Manipulating Subtitles
+
+
